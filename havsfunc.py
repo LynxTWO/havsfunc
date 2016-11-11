@@ -789,7 +789,7 @@ def QTGMC(Input, Preset='Slower', TR0=None, TR1=None, TR2=None, Rep0=None, Rep1=
     if EdiExt is not None and (not isinstance(EdiExt, vs.VideoNode) or EdiExt.format.id != Input.format.id):
         raise TypeError("QTGMC: 'EdiExt' must be the same format as input")
     if InputType != 1 and not isinstance(TFF, bool):
-        raise TypeError("QTGMC: 'TFF' must be set when InputType is not 1. Setting TFF to true means top field first and false means bottom field first")
+        raise TypeError("QTGMC: 'TFF' must be set when InputType is not 1. Setting TFF to True means top field first.  False means bottom field first")
     
     bits = Input.format.bits_per_sample
     shift = bits - 8
@@ -1950,7 +1950,7 @@ def ivtc_txt60mc(src, frame_ref, srcbob=False, draft=False, tff=None):
     if not isinstance(src, vs.VideoNode):
         raise TypeError('ivtc_txt60mc: This is not a clip')
     if not (srcbob or isinstance(tff, bool)):
-        raise TypeError("ivtc_txt60mc: 'tff' must be set if srcbob is not true. Setting tff to true means top field first and false means bottom field first")
+        raise TypeError("ivtc_txt60mc: 'tff' must be set if srcbob is not true. Setting tff to True means top field first.  False means bottom field first")
     
     field_ref = frame_ref if srcbob else frame_ref * 2
     field_ref %= 5
@@ -2608,13 +2608,13 @@ def SMDegrain(input, tr=2, thSAD=300, thSADC=None, RefineMotion=False, contrasha
     
     # Error Report
     if not (ifC or isinstance(contrasharp, int)):
-        raise TypeError("SMDegrain: 'contrasharp' only accepts bool and integer inputs")
+        raise TypeError("SMDegrain: 'contrasharp' only accepts boolean logic ('True' or 'False') and integer inputs")
     if if1 and (not isinstance(CClip, vs.VideoNode) or CClip.format.id != input.format.id):
         raise TypeError("SMDegrain: 'CClip' must be the same format as input")
     if interlaced and h & 3:
-        raise ValueError('SMDegrain: Interlaced source requires mod 4 height sizes')
+        raise ValueError('SMDegrain: Interlaced source requires mod 4 height sizes.  Height must be divisivble by 4.')
     if interlaced and not isinstance(tff, bool):
-        raise TypeError("SMDegrain: 'tff' must be set if source is interlaced. Setting tff to true means top field first and false means bottom field first")
+        raise TypeError("SMDegrain: 'tff' must be set if source is interlaced. Setting tff to True means top field first.  False means bottom field first")
     if not (isinstance(prefilter, int) or preclip):
         raise TypeError("SMDegrain: 'prefilter' only accepts integer and clip inputs")
     if preclip and prefilter.format.id != input.format.id:
@@ -4122,7 +4122,7 @@ def Bob(clip, b=1/3, c=1/3, tff=None):
     if not isinstance(clip, vs.VideoNode):
         raise TypeError('Bob: This is not a clip')
     if not isinstance(tff, bool):
-        raise TypeError("Bob: 'tff' must be set. Setting tff to true means top field first and false means bottom field first")
+        raise TypeError("Bob: 'tff' must be set. Setting tff to True means top field first.  False means bottom field first")
     
     bits = clip.format.bits_per_sample
     clip = core.std.SeparateFields(clip, tff).fmtc.resample(scalev=2, kernel='bicubic', a1=b, a2=c, interlaced=1, interlacedd=0)
