@@ -4167,7 +4167,7 @@ def Clamp(clip, bright_limit, dark_limit, overshoot=0, undershoot=0, planes=[0, 
     return core.std.Expr([clip, bright_limit, dark_limit], expr)
 
 
-def KNLMeansCL(clip, d=None, a=None, s=None, h=None, wmode=None, wref=None, device_type=None, info=None):
+def KNLMeansCL(clip, d=None, a=None, s=None, h=None, wmode=None, device_type=None, info=None):
     core = vs.get_core()
     
     if not isinstance(clip, vs.VideoNode):
@@ -4175,15 +4175,15 @@ def KNLMeansCL(clip, d=None, a=None, s=None, h=None, wmode=None, wref=None, devi
     if clip.format.color_family not in [vs.YUV, vs.YCOCG]:
         raise TypeError('KNLMeansCL: This wrapper is intended to be used for color family of YUV and YCOCG only')
     
-    nrY = core.knlm.KNLMeansCL(clip, d=d, a=a, s=s, h=h, wmode=wmode, wref=wref, device_type=device_type, info=info)
+    nrY = core.knlm.KNLMeansCL(clip, d=d, a=a, s=s, h=h, wmode=wmode, device_type=device_type, info=info)
     
     if clip.format.subsampling_w > 0 or clip.format.subsampling_h > 0:
         subY = core.resize.Bicubic(mvf.GetPlane(clip, 0), clip.width >> clip.format.subsampling_w, clip.height >> clip.format.subsampling_h,
                                    src_left=-0.5 * (1 << clip.format.subsampling_w) + 0.5, filter_param_a=0, filter_param_b=0.5)
         yuv444 = core.std.ShufflePlanes([subY, clip], planes=[0, 1, 2], colorfamily=clip.format.color_family)
-        nrUV = core.knlm.KNLMeansCL(yuv444, d=d, a=a, s=s, h=h, cmode=True, wmode=wmode, wref=wref, device_type=device_type)
+        nrUV = core.knlm.KNLMeansCL(yuv444, d=d, a=a, s=s, h=h, cmode=True, wmode=wmode, device_type=device_type)
     else:
-        nrUV = core.knlm.KNLMeansCL(clip, d=d, a=a, s=s, h=h, cmode=True, wmode=wmode, wref=wref, device_type=device_type)
+        nrUV = core.knlm.KNLMeansCL(clip, d=d, a=a, s=s, h=h, cmode=True, wmode=wmode, device_type=device_type)
     
     return core.std.ShufflePlanes([nrY, nrUV], planes=[0, 1, 2], colorfamily=clip.format.color_family)
 
